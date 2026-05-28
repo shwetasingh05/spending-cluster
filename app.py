@@ -215,8 +215,9 @@ elif page == "📊 EDA":
         margin=dict(l=40, r=20, t=40, b=40),
         height=400
     )
-    fig.update_yaxes(showfliers=False)
+    fig.update_traces(boxpoints=False)
     st.plotly_chart(fig, use_container_width=True)
+
 
     st.subheader("Feature Correlation Heatmap")
     with plt.style.context('default'):
