@@ -602,42 +602,34 @@ elif page == "Predictor":
         pred_color = colors[pred_name]
         
         strategies = {
-            'Active Transactors': """
-            <ul style="margin: 0; padding-left: 20px; color: #cbd5e1; font-family: 'Outfit', sans-serif;">
-                <li style="margin-bottom: 8px;"><strong>Engagement Plan:</strong> Retain & Reward.</li>
-                <li style="margin-bottom: 8px;"><strong>Tactical Offer:</strong> Invite them to a premium Mastercard/Visa Black tier card with double reward points on travel, luxury shopping, and dining.</li>
-                <li><strong>Targeting Priority:</strong> High priority for relationship managers.</li>
-            </ul>
-            """,
-            'Inactive Users': """
-            <ul style="margin: 0; padding-left: 20px; color: #cbd5e1; font-family: 'Outfit', sans-serif;">
-                <li style="margin-bottom: 8px;"><strong>Engagement Plan:</strong> Activate & Spend Incentives.</li>
-                <li style="margin-bottom: 8px;"><strong>Tactical Offer:</strong> Send a targeted "Spend $200 in the next 30 days and get $25 cash back" incentive to encourage their first transactional behavior.</li>
-                <li><strong>Targeting Priority:</strong> High volume opportunity (covers ~68% of the customer base).</li>
-            </ul>
-            """,
-            'Cash Advance Revolvers': """
-            <ul style="margin: 0; padding-left: 20px; color: #cbd5e1; font-family: 'Outfit', sans-serif;">
-                <li style="margin-bottom: 8px;"><strong>Engagement Plan:</strong> Debt restructuring and credit monitoring.</li>
-                <li style="margin-bottom: 8px;"><strong>Tactical Offer:</strong> Proactively offer low-interest balance transfer plans or conversion of high cash balances into structured 12-month installment plans (EMIs) to reduce delinquency risks.</li>
-                <li><strong>Targeting Priority:</strong> High default risk mitigation.</li>
-            </ul>
-            """
+            'Active Transactors': """<ul style="margin: 0; padding-left: 20px; color: #cbd5e1; font-family: 'Outfit', sans-serif;">
+    <li style="margin-bottom: 8px;"><strong>Engagement Plan:</strong> Retain & Reward.</li>
+    <li style="margin-bottom: 8px;"><strong>Tactical Offer:</strong> Invite them to a premium Mastercard/Visa Black tier card with double reward points on travel, luxury shopping, and dining.</li>
+    <li><strong>Targeting Priority:</strong> High priority for relationship managers.</li>
+</ul>""",
+            'Inactive Users': """<ul style="margin: 0; padding-left: 20px; color: #cbd5e1; font-family: 'Outfit', sans-serif;">
+    <li style="margin-bottom: 8px;"><strong>Engagement Plan:</strong> Activate & Spend Incentives.</li>
+    <li style="margin-bottom: 8px;"><strong>Tactical Offer:</strong> Send a targeted "Spend $200 in the next 30 days and get $25 cash back" incentive to encourage their first transactional behavior.</li>
+    <li><strong>Targeting Priority:</strong> High volume opportunity (covers ~68% of the customer base).</li>
+</ul>""",
+            'Cash Advance Revolvers': """<ul style="margin: 0; padding-left: 20px; color: #cbd5e1; font-family: 'Outfit', sans-serif;">
+    <li style="margin-bottom: 8px;"><strong>Engagement Plan:</strong> Debt restructuring and credit monitoring.</li>
+    <li style="margin-bottom: 8px;"><strong>Tactical Offer:</strong> Proactively offer low-interest balance transfer plans or conversion of high cash balances into structured 12-month installment plans (EMIs) to reduce delinquency risks.</li>
+    <li><strong>Targeting Priority:</strong> High default risk mitigation.</li>
+</ul>"""
         }
         
         st.divider()
         
-        st.markdown(f"""
-        <div class="glass-card" style="border-left: 6px solid {pred_color} !important;">
-            <h4 style="margin:0; color:#cbd5e1;">Predicted Customer Persona</h4>
-            <h1 style="color:{pred_color}; margin: 5px 0 15px 0; font-size:32px;">{pred_name}</h1>
-            <p style="color:white; font-size:16px;">This customer exhibits spending patterns matching our <b>{pred_name}</b> cluster.</p>
-            <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); margin-top:15px;">
-                <h5 style="margin:0 0 10px 0; color:white; font-weight:bold; font-size:16px;">Targeted Marketing & Risk Mitigation Plan:</h5>
-                <div style="line-height:1.8; font-size:15px; margin-top:10px;">
-                    {strategies[pred_name]}
-                </div>
-            </div>
+        st.markdown(f"""<div class="glass-card" style="border-left: 6px solid {pred_color} !important;">
+    <h4 style="margin:0; color:#cbd5e1;">Predicted Customer Persona</h4>
+    <h1 style="color:{pred_color}; margin: 5px 0 15px 0; font-size:32px;">{pred_name}</h1>
+    <p style="color:white; font-size:16px;">This customer exhibits spending patterns matching our <b>{pred_name}</b> cluster.</p>
+    <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); margin-top:15px;">
+        <h5 style="margin:0 0 10px 0; color:white; font-weight:bold; font-size:16px;">Targeted Marketing & Risk Mitigation Plan:</h5>
+        <div style="line-height:1.8; font-size:15px; margin-top:10px;">
+            {strategies[pred_name]}
         </div>
-        """, unsafe_allow_html=True)
+    </div>
+</div>""", unsafe_allow_html=True)
 
