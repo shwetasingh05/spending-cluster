@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 # ── PAGE CONFIG ──────────────────────────────
 st.set_page_config(
     page_title="Spending Cluster Analysis",
-    page_icon="💳",
+    page_icon=None,
     layout="wide"
 )
 
@@ -113,35 +113,35 @@ df = load_data()
 colors = {'Active Transactors': '#2ecc71', 'Inactive Users': '#3498db', 'Cash Advance Revolvers': '#e74c3c'}
 
 # ── SIDEBAR NAVIGATION ───────────────────────
-st.sidebar.title("💳 Navigation")
+st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", [
-    "🏠 Overview",
-    "📊 EDA",
-    "🔍 Find Optimal K",
-    "🎯 Clusters",
-    "💡 Insights",
-    "🔮 Predictor"
+    "Overview",
+    "EDA",
+    "Find Optimal K",
+    "Clusters",
+    "Insights",
+    "Predictor"
 ])
 
 # ── PAGES ────────────────────────────────────
 
 # ── 1. OVERVIEW ──────────────────────────────
-if page == "🏠 Overview":
-    st.title("💳 Credit Card Spending Cluster Analysis")
+if page == "Overview":
+    st.title("Credit Card Spending Cluster Analysis")
     st.markdown("#### Segmenting customers based on credit card spending behavior using K-Means Clustering")
     st.divider()
 
     # Introduction / Business Case Callout
     st.markdown("""
-    ### 🎯 Business Objective & Context
+    ### Business Objective & Context
     In the highly competitive credit card industry, one-size-fits-all marketing campaigns are inefficient and expensive. 
     To maximize profitability and manage risk, financial institutions must understand their customers' distinct behavioral profiles.
     
     This application utilizes **K-Means Clustering** to segment **8,950 credit card holders** based on 17 behavioral attributes (including spending habits, cash advance usage, payment frequency, and credit limits). 
     By defining distinct customer personas, the bank can:
-    * 🟢 **Maximize Retention:** Target high-value transactors with premium loyalty programs.
-    * 🔵 **Drive Activation:** Deploy personalized spend incentives to dormant cardholders.
-    * 🔴 **Mitigate Default Risk:** Identify and proactively support customers heavily reliant on high-interest cash advances.
+    * **:green[Maximize Retention]**: Target high-value transactors with premium loyalty programs.
+    * **:blue[Drive Activation]**: Deploy personalized spend incentives to dormant cardholders.
+    * **:red[Mitigate Default Risk]**: Identify and proactively support customers heavily reliant on high-interest cash advances.
     """)
     
     st.divider()
@@ -153,17 +153,21 @@ if page == "🏠 Overview":
 
     st.divider()
 
-    st.write("### 📋 Dataset Preview")
+    st.write("### Dataset Preview")
     st.markdown("A sample of the underlying transactional data showing spending patterns, balance history, and credit usage:")
     st.dataframe(df.head(10), use_container_width=True)
+    st.markdown("**So What?** This raw dataset captures a highly multidimensional view of credit card usage. Standard analytical methods struggle to group these patterns manually, highlighting the critical business need for unsupervised machine learning to classify customer behaviors dynamically.")
 
-    st.write("### 📊 Summary Statistics")
+    st.divider()
+
+    st.write("### Summary Statistics")
     st.markdown("Statistical summary of credit behaviors across the entire customer base:")
     st.dataframe(df.describe().round(2), use_container_width=True)
+    st.markdown("**So What?** Extreme differences in standard deviations and maximums (e.g., Purchases ranging from $0 to $49,000) demonstrate that treating all credit card holders as a single group leads to wasted marketing budgets and missed default indicators.")
 
 # ── 2. EDA ────────────────────────────────────
-elif page == "📊 EDA":
-    st.title("📊 Exploratory Data Analysis")
+elif page == "EDA":
+    st.title("Exploratory Data Analysis")
     st.divider()
 
     col1, col2 = st.columns(2)
@@ -185,6 +189,7 @@ elif page == "📊 EDA":
         )
         fig.update_traces(marker_line_width=0)
         st.plotly_chart(fig, use_container_width=True)
+        st.markdown("**Key Takeaway:** Over 90% of cardholders cluster at the low end of purchases, indicating a highly skewed transactional ecosystem where a small minority drives the majority of standard sales revenue.")
 
     with col2:
         st.subheader("Cash Advance Distribution")
@@ -203,6 +208,7 @@ elif page == "📊 EDA":
         )
         fig.update_traces(marker_line_width=0)
         st.plotly_chart(fig, use_container_width=True)
+        st.markdown("**Key Takeaway:** The severe peak at $0 shows that cash advances are an operational edge-case for most users, but for the select minority who use them, they represent intensive revolving credit dependency.")
 
     st.subheader("Outlier Detection — Boxplot")
     fig = px.box(df, y=['BALANCE', 'PURCHASES', 'CASH_ADVANCE', 'CREDIT_LIMIT', 'PAYMENTS'],
@@ -217,7 +223,7 @@ elif page == "📊 EDA":
     )
     fig.update_traces(boxpoints=False)
     st.plotly_chart(fig, use_container_width=True)
-
+    st.markdown("**Key Takeaway:** The wide range of balances and credit limits shows massive inequality in customer buying power. Campaign planning must be tailored to these scale variations to remain realistic and relevant.")
 
     st.subheader("Feature Correlation Heatmap")
     with plt.style.context('default'):
@@ -226,10 +232,11 @@ elif page == "📊 EDA":
         ax.set_title('Feature Correlations')
         st.pyplot(fig)
         plt.close()
+    st.markdown("**Key Takeaway:** Strong correlation between purchases and payment volumes suggests high-transacting users are highly liquid and low-risk, whereas lack of correlation between cash advances and purchases confirms that cash advance users utilize their cards strictly as credit lines rather than payment tools.")
 
 # ── 3. FIND OPTIMAL K ─────────────────────────
-elif page == "🔍 Find Optimal K":
-    st.title("🔍 Finding Optimal Number of Clusters")
+elif page == "Find Optimal K":
+    st.title("Finding Optimal Number of Clusters")
     st.divider()
 
     scaler = StandardScaler()
@@ -284,11 +291,12 @@ elif page == "🔍 Find Optimal K":
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    st.success("✅ K=3 chosen — highest silhouette score (0.2403) and clear elbow point")
+    st.success("K=3 chosen — highest silhouette score (0.2403) and clear elbow point")
+    st.markdown("**So What?** At K=3, we achieve the optimal mathematical compromise — the Elbow curve begins to flatten and the Silhouette score reaches its local peak. Defining fewer clusters oversimplifies the customer base, while more clusters create redundant marketing categories.")
 
 # ── 4. CLUSTERS ───────────────────────────────
-elif page == "🎯 Clusters":
-    st.title("🎯 Cluster Profiles")
+elif page == "Clusters":
+    st.title("Cluster Profiles")
     st.divider()
 
     df_clustered, df_scaled, pca, scaler, kmeans = run_clustering()
@@ -297,24 +305,23 @@ elif page == "🎯 Clusters":
     counts = df_clustered['Cluster_Name'].value_counts()
     
     col1, col2, col3 = st.columns(3)
-    # Using dynamic, glassmorphic metric cards for cluster counts
     col1.markdown(f"""
     <div class="glass-card" style="border-left: 4px solid #2ecc71 !important;">
-        <h4 style="color: #cbd5e1; margin: 0; font-size: 14px;">🟢 Active Transactors</h4>
+        <h4 style="color: #cbd5e1; margin: 0; font-size: 14px;">Active Transactors</h4>
         <h2 style="color: #ffffff; margin: 5px 0 0 0; font-size: 28px;">{counts.get('Active Transactors', 0):,}</h2>
     </div>
     """, unsafe_allow_html=True)
     
     col2.markdown(f"""
     <div class="glass-card" style="border-left: 4px solid #3498db !important;">
-        <h4 style="color: #cbd5e1; margin: 0; font-size: 14px;">🔵 Inactive Users</h4>
+        <h4 style="color: #cbd5e1; margin: 0; font-size: 14px;">Inactive Users</h4>
         <h2 style="color: #ffffff; margin: 5px 0 0 0; font-size: 28px;">{counts.get('Inactive Users', 0):,}</h2>
     </div>
     """, unsafe_allow_html=True)
     
     col3.markdown(f"""
     <div class="glass-card" style="border-left: 4px solid #e74c3c !important;">
-        <h4 style="color: #cbd5e1; margin: 0; font-size: 14px;">🔴 Cash Advance Revolvers</h4>
+        <h4 style="color: #cbd5e1; margin: 0; font-size: 14px;">Cash Advance Revolvers</h4>
         <h2 style="color: #ffffff; margin: 5px 0 0 0; font-size: 28px;">{counts.get('Cash Advance Revolvers', 0):,}</h2>
     </div>
     """, unsafe_allow_html=True)
@@ -349,6 +356,7 @@ elif page == "🎯 Clusters":
         height=500
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.markdown("**Key Takeaway:** The clear spatial separation between the colored clusters validates that the K-Means algorithm has successfully uncovered statistically distinct customer behaviors in a reduced 2D mathematical space.")
 
     # Cluster profile bar chart
     st.subheader("Cluster Comparison — Key Features")
@@ -375,13 +383,15 @@ elif page == "🎯 Clusters":
         height=450
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.markdown("**Key Takeaway:** This profile chart highlights that 'Active Transactors' dominate transactional purchases, 'Cash Advance Revolvers' drive the majority of debt and cash withdrawals, and 'Inactive Users' remain dormant across all categories.")
 
     st.subheader("Full Cluster Profile Table")
     st.dataframe(df_clustered.groupby('Cluster_Name').mean().round(2), use_container_width=True)
+    st.markdown("**So What?** Comparing these exact averages confirms that a standard credit card limit does not dictate customer behavior. For example, Cash Advance Revolvers hold high credit limits but generate zero standard purchase transactions, proving that behavioral segmentation is far more valuable than simple credit limit brackets.")
 
 # ── 5. INSIGHTS ───────────────────────────────
-elif page == "💡 Insights":
-    st.title("💡 Business Insights")
+elif page == "Insights":
+    st.title("Business Insights")
     st.divider()
 
     df_clustered, df_scaled, pca, scaler, kmeans = run_clustering()
@@ -392,7 +402,7 @@ elif page == "💡 Insights":
 
     # ── PIE CHART ──
     with col1:
-        st.subheader("🥧 Customer Segment Distribution")
+        st.subheader("Customer Segment Distribution")
         fig = px.pie(names=counts.index, values=counts.values,
                      color=counts.index,
                      color_discrete_map=colors,
@@ -409,11 +419,11 @@ elif page == "💡 Insights":
             showlegend=False
         )
         st.plotly_chart(fig, use_container_width=True)
-        st.info("💡 **Insight:** Nearly 7 out of 10 customers are inactive. The biggest growth opportunity is activating existing customers — not acquiring new ones.")
+        st.info("Insight: Nearly 7 out of 10 customers are inactive. The biggest growth opportunity is activating existing customers — not acquiring new ones.")
 
     # ── FULL PAYMENT RATE ──
     with col2:
-        st.subheader("💳 Who Pays Their Full Bill?")
+        st.subheader("Who Pays Their Full Bill?")
         profile_full = df_clustered.groupby('Cluster_Name')['PRC_FULL_PAYMENT'].mean().reset_index()
         
         fig = px.bar(profile_full, x='Cluster_Name', y='PRC_FULL_PAYMENT',
@@ -434,25 +444,25 @@ elif page == "💡 Insights":
             showlegend=False
         )
         st.plotly_chart(fig, use_container_width=True)
-        st.info("💡 **Insight:** Active Transactors pay in full most often — low risk, high value. Cash Advance Revolvers rarely pay in full — higher default risk for the bank.")
+        st.info("Insight: Active Transactors pay in full most often — low risk, high value. Cash Advance Revolvers rarely pay in full — higher default risk for the bank.")
 
     st.divider()
 
     # ── MARKETING ROI SIMULATOR ──
-    st.subheader("💵 Marketing Campaign ROI Simulator")
+    st.subheader("Marketing Campaign ROI Simulator")
     st.markdown("Estimate the potential financial impact of running targeted activation campaigns for the **Inactive Users** segment.")
     
     col_sim1, col_sim2 = st.columns([1, 1])
     
     with col_sim1:
-        st.markdown("### 🎛️ Simulation Parameters")
+        st.markdown("### Simulation Parameters")
         target_pct = st.slider("Target Size (% of Inactive Users)", min_value=5, max_value=100, value=25, step=5)
         conv_rate = st.slider("Estimated Conversion Rate (%)", min_value=1, max_value=20, value=5, step=1)
         spend_boost = st.slider("Average Annual Spend Boost ($)", min_value=50, max_value=1000, value=250, step=50)
         incentive_cost = st.slider("Incentive Cost per Customer ($)", min_value=5, max_value=50, value=15, step=5)
         
     with col_sim2:
-        st.markdown("### 📈 Projected Campaign Financials")
+        st.markdown("### Projected Campaign Financials")
         total_inactive = counts.get('Inactive Users', 6076)
         targeted = int(total_inactive * (target_pct / 100))
         converted = int(targeted * (conv_rate / 100))
@@ -477,16 +487,18 @@ elif page == "💡 Insights":
         """, unsafe_allow_html=True)
         
         if net_profit >= 0:
-            st.success("✅ **Profitable Strategy:** The conversion boost easily recovers the customer incentive campaign cost.")
+            st.success("Profitable Strategy: The conversion boost easily recovers the customer incentive campaign cost.")
         else:
-            st.error("⚠️ **Negative Margins:** The campaign cost exceeds the return. Try reducing the incentive cost or increasing conversion estimates.")
+            st.error("Negative Margins: The campaign cost exceeds the return. Try reducing the incentive cost or increasing conversion estimates.")
+
+    st.markdown("**Key Takeaway (So What?):** This simulation proves that reactivating dormant accounts is highly profitable. Because customer acquisition costs (CAC) for new clients are extremely high, investing in targeted $15–$25 spend incentives for the existing 'Inactive Users' segment yields an immediate positive return on investment (ROI).")
 
     st.divider()
 
     # ── WRITTEN RECOMMENDATIONS ──
-    st.subheader("📋 Business Recommendations")
+    st.subheader("Business Recommendations")
 
-    st.markdown("### 🟢 Active Transactors — *Retain & Reward*")
+    st.markdown("### Active Transactors — *Retain & Reward*")
     st.markdown("""
     - Highest spenders, pay bills regularly, high credit limits
     - These are the bank's most **profitable and reliable** customers
@@ -494,7 +506,7 @@ elif page == "💡 Insights":
     """)
     st.divider()
 
-    st.markdown("### 🔵 Inactive Users — *Activate & Engage*")
+    st.markdown("### Inactive Users — *Activate & Engage*")
     st.markdown("""
     - 68% of all customers — barely use their card
     - Small nudges can convert them into active users
@@ -502,7 +514,7 @@ elif page == "💡 Insights":
     """)
     st.divider()
 
-    st.markdown("### 🔴 Cash Advance Revolvers — *Support & Reduce Risk*")
+    st.markdown("### Cash Advance Revolvers — *Support & Reduce Risk*")
     st.markdown("""
     - Rely heavily on cash withdrawals, carry high debt balances
     - Highest risk of default — need intervention early
@@ -510,18 +522,38 @@ elif page == "💡 Insights":
     """)
     st.divider()
 
-    st.success("📌 **Key Finding:** Converting just 10% of inactive users to moderate spenders would add more revenue than acquiring new customers — at zero acquisition cost.")
+    st.success("Key Finding: Converting just 10% of inactive users to moderate spenders would add more revenue than acquiring new customers — at zero acquisition cost.")
+
+    # ── CONCLUSION & STRATEGIC ROADMAP ──
+    st.divider()
+    st.subheader("Conclusion & Strategic Roadmap")
+    st.markdown("""
+    ### Final Summary & Executive Directives
+    To transform this mathematical customer segmentation into concrete, bottom-line financial performance, bank leadership should initiate the following three strategic plays immediately:
+    
+    1. **Immediate Action: Reactivate the Inactive Cohort (Quick Win)**
+       * *Rationale:* 67.9% of our cardholders are dormant. Converting even 5% of these users yields a massive increase in payment volumes at near-zero customer acquisition cost.
+       * *Directive:* Launch the targeted incentive campaigns simulated above using automated email triggers.
+    
+    2. **Mid-Term Action: Upsell and Reward Active Transactors (Revenue Protection)**
+       * *Rationale:* Active Transactors generate our transaction fee revenue and have a 29.9% full-bill payment rate, making them highly profitable and exceptionally low-risk.
+       * *Directive:* Partner with high-end travel and dining brands to launch a premium co-branded card tier, ensuring these high-value users remain loyal.
+    
+    3. **Risk Action: De-risk Cash Advance Revolvers (Loss Prevention)**
+       * *Rationale:* Cash Advance Revolvers carry high balances but pay in full only 3.4% of the time, signaling significant delinquency and charge-off risks.
+       * *Directive:* Implement automated credit-limit triggers that offer structured low-interest EMI conversions on cash advances to steadily reduce outstanding debt and mitigate credit losses.
+    """)
 
 # ── 6. PREDICTOR ──────────────────────────────
-elif page == "🔮 Predictor":
-    st.title("🔮 Real-Time Customer Segment Predictor")
+elif page == "Predictor":
+    st.title("Real-Time Customer Segment Predictor")
     st.markdown("#### Input operational and spending features to classify a customer profile in real-time.")
     st.divider()
 
     df_clustered, df_scaled, pca, scaler, kmeans = run_clustering()
 
     st.markdown("""
-    ### 👤 Enter Customer Behavior Details
+    ### Enter Customer Behavior Details
     Adjust the attributes below to classify which customer profile best fits this behavior.
     """)
 
@@ -539,7 +571,7 @@ elif page == "🔮 Predictor":
         purchase_freq = st.slider("Purchase Frequency (0 = Never, 1 = Daily)", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
         full_pay_rate = st.slider("Proportion Paid in Full (0 = None, 1 = All)", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
 
-    if st.button("🔮 Classify Customer Segment", use_container_width=True):
+    if st.button("Classify Customer Segment", use_container_width=True):
         feature_cols = [
             'BALANCE', 'BALANCE_FREQUENCY', 'PURCHASES', 'ONEOFF_PURCHASES', 'INSTALLMENTS_PURCHASES',
             'CASH_ADVANCE', 'PURCHASES_FREQUENCY', 'ONEOFF_PURCHASES_FREQUENCY', 'PURCHASES_INSTALLMENTS_FREQUENCY',
@@ -571,19 +603,19 @@ elif page == "🔮 Predictor":
         
         strategies = {
             'Active Transactors': """
-            * 💎 **Engagement Plan:** Retain & Reward.
-            * 🎁 **Tactical Offer:** Invite them to a premium Mastercard/Visa Black tier card with double reward points on travel, luxury shopping, and dining.
-            * 🎯 **Targeting Priority:** High priority for relationship managers.
+            * **Engagement Plan:** Retain & Reward.
+            * **Tactical Offer:** Invite them to a premium Mastercard/Visa Black tier card with double reward points on travel, luxury shopping, and dining.
+            * **Targeting Priority:** High priority for relationship managers.
             """,
             'Inactive Users': """
-            * 📢 **Engagement Plan:** Activate & Spend Incentives.
-            * 💸 **Tactical Offer:** Send a targeted "Spend $200 in the next 30 days and get $25 cash back" incentive to encourage their first transactional behavior.
-            * 🎯 **Targeting Priority:** High volume opportunity (covers ~68% of the customer base).
+            * **Engagement Plan:** Activate & Spend Incentives.
+            * **Tactical Offer:** Send a targeted "Spend $200 in the next 30 days and get $25 cash back" incentive to encourage their first transactional behavior.
+            * **Targeting Priority:** High volume opportunity (covers ~68% of the customer base).
             """,
             'Cash Advance Revolvers': """
-            * 🛡️ **Engagement Plan:** Debt restructuring and credit monitoring.
-            * 📊 **Tactical Offer:** Proactively offer low-interest balance transfer plans or conversion of high cash balances into structured 12-month installment plans (EMIs) to reduce delinquency risks.
-            * 🎯 **Targeting Priority:** High default risk mitigation.
+            * **Engagement Plan:** Debt restructuring and credit monitoring.
+            * **Tactical Offer:** Proactively offer low-interest balance transfer plans or conversion of high cash balances into structured 12-month installment plans (EMIs) to reduce delinquency risks.
+            * **Targeting Priority:** High default risk mitigation.
             """
         }
         
@@ -595,7 +627,7 @@ elif page == "🔮 Predictor":
             <h1 style="color:{pred_color}; margin: 5px 0 15px 0; font-size:32px;">{pred_name}</h1>
             <p style="color:white; font-size:16px;">This customer exhibits spending patterns matching our <b>{pred_name}</b> cluster.</p>
             <div style="background:rgba(0,0,0,0.2); padding:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); margin-top:15px;">
-                <h5 style="margin:0 0 10px 0; color:white; font-weight:bold; font-size:16px;">📋 Targeted Marketing & Risk Mitigation Plan:</h5>
+                <h5 style="margin:0 0 10px 0; color:white; font-weight:bold; font-size:16px;">Targeted Marketing & Risk Mitigation Plan:</h5>
                 <div style="color:#cbd5e1; line-height:1.8; font-size:15px;">
                     {strategies[pred_name]}
                 </div>
