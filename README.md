@@ -47,6 +47,9 @@ streamlit run app.py
 
 ---
 
+## Open In The Browser 
+https://spending-cluster.streamlit.app/
+
 ## 🛠️ Tech Stack & Methods
 * **Dashboard:** Streamlit (Custom Dark Theme UI)
 * **Visualizations:** Matplotlib, Seaborn (Matched to dark theme context)
